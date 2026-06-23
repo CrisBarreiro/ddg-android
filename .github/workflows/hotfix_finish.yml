@@ -26,11 +26,14 @@ jobs:
       GIT_MERGE_AUTOEDIT: no
 
     steps:
+      # Submodules are intentionally not checked out: this job only does git plumbing
+      # (merge to main/develop, tag, push) and never reads submodule contents.
+      # Populating them would leave the tree dirty when the lane switches branches
+      # (which can record different submodule commits), breaking the merge/tag.
       - name: Checkout hotfix branch
         uses: actions/checkout@v4
         with:
           ref: hotfix/${{ inputs.app-version }}
-          submodules: recursive
           token: ${{ secrets.GT_DAXMOBILE }}
           fetch-depth: 0
 

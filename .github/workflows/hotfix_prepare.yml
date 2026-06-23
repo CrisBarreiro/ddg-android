@@ -49,11 +49,14 @@ jobs:
             exit 1
           fi
 
+      # Submodules are intentionally not checked out: this job only does git plumbing
+      # (branch, version bump, cherry-pick, push) and never reads submodule contents.
+      # Populating them would leave the tree dirty when hotfix-start switches between
+      # develop/main (which can record different submodule commits), breaking the lane.
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
-          submodules: recursive
           token: ${{ secrets.GT_DAXMOBILE }}
           fetch-depth: 0
 
